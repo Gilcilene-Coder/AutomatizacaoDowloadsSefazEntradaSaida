@@ -1,0 +1,10 @@
+easygui~=0.98.3
+PyGetWindow~=0.0.9
+beautifulsoup4~=4.12.2
+selenium~=3.141.0
+setuptools~=65.5.1
+keyboard~=0.13.5
+wait~=0.0.3
+PyAutoGUI~=0.9.53
+requests~=2.31.0
+pathlib~=1.0.1
