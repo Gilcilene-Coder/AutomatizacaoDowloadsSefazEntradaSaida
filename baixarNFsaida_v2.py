@@ -17,7 +17,6 @@ from tkinter import messagebox as mbox
 import sys
 
 def download_chromedriver(url):
-    # Fazendo o download do chromedriver
     response = requests.get(url, stream=True)
     file_name = url.split("/")[-1]
     with open(file_name, 'wb') as out_file:
@@ -25,21 +24,20 @@ def download_chromedriver(url):
     del response
 
 def extract_chromedriver(file_name, directory):
-    # Extraindo o arquivo .zip
     with zipfile.ZipFile(file_name, 'r') as zip_ref:
         zip_ref.extractall(directory)
     os.remove(file_name)
 
 chromedriver_url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/116.0.5845.96/win64/chromedriver-win64.zip"
 download_chromedriver(chromedriver_url)
-extract_chromedriver("chromedriver-win64.zip", "./") # or any directory you want
+extract_chromedriver("chromedriver-win64.zip", "./") 
 
 class UserInputApplication(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
 
         self.title("Coleta de Informações")
-        self.geometry("350x490")  # Dimensões da janela
+        self.geometry("350x490") 
         self.nfe_option = ""
         self.nf_model_option = ""
         self.username_var = tk.StringVar()
@@ -116,19 +114,17 @@ class UserInputApplication(tk.Tk):
     def validate_form(self, values):
         errors = []
 
-        # Verifica se todos os campos foram preenchidos
         if not all(value is not None and value != '' for value in values):
             errors.extend([0, 1, 2, 3, 4,5,6])  # Índices dos campos com erro
             mbox.showerror("Erro", "Todos os campos devem ser preenchidos.")
             return errors
-        # Verifica se o campo "inscrição" contém apenas números
         if not re.match("^\d+$", values[4]):
-            errors.append(4)  # Índice do campo "Inscrição Estadual"
+            errors.append(4)  
 
         if not self.download_option.get():
-            errors.append(5)  # Índice do campo "Downloads de NFe"
+            errors.append(5)  
         if not self.nf_model_option.get():
-            errors.append(6)  # Índice do campo "Modelo de NF"
+            errors.append(6)  
 
         if errors:
             error_message = "Os seguintes campos apresentam erros:\n"
@@ -147,7 +143,7 @@ class UserInputApplication(tk.Tk):
             mbox.showerror("Erro", error_message)
             return errors
 
-        return errors  # Lista vazia indica que não há erros
+        return errors  
 
     def download_notes(self):
         for _ in range(2):
@@ -162,7 +158,6 @@ class UserInputApplication(tk.Tk):
                     baixar1.click()
                     time.sleep(15)
 
-                    # Verifica se o elemento okxml está disponível dentro de 5 segundos
                     WebDriverWait(self.driver, 5).until(
                         EC.presence_of_element_located(
                             (By.XPATH, '//button[contains(@class, "dwnld-loading-window-cancel")]'))
@@ -184,9 +179,8 @@ class UserInputApplication(tk.Tk):
         self.abrir_site_cofrenfe()
 
     def abrir_site_cofrenfe(self):
-        chrome_driver_path = os.path.join(os.getcwd(), 'Version/chromedriver.exe')  # define chrome_driver_path
+        chrome_driver_path = os.path.join(os.getcwd(), 'Version/chromedriver.exe') 
 
-            # Inicializa o WebDriver.
         self.driver = webdriver.Chrome(executable_path=chrome_driver_path)
         self.driver.get("https://painel.cofrenfe.com.br/login")
         self.wait = WebDriverWait(self.driver, 10)
@@ -194,7 +188,6 @@ class UserInputApplication(tk.Tk):
         logincofre = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="login_cpf"]')))
         logincofre.send_keys("00.407.278/0001-88")
 
-        # Aguarda até que o campo de senha esteja presente e clicável
         senhacofre = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="login_senha"]')))
         senhacofre.send_keys("Contac188")
 
@@ -210,19 +203,15 @@ class UserInputApplication(tk.Tk):
         brower.click()
         time.sleep(10)
 
-        for _ in range(1):  # Pressione "d" 4 vezes para percorrer as pastas até Downloads
-            pyautogui.write("Downloads", interval=0.2)  # Intervalo de 0.2 segundos entre as teclas
+        for _ in range(1): 
+            pyautogui.write("Downloads", interval=0.2)  
             time.sleep(0.5)
         pyautogui.press("enter")
 
-        pyautogui.press("home")  # seleciona a tela home
+        pyautogui.press("home")  
         time.sleep(5)
-        pyautogui.press("enter")  # Pressiona Enter para selecionar o último arquivo
-        #
-        # enviar = self.wait.until(
-        #     EC.element_to_be_clickable((By.XPATH, '//*[@id="frminterno"]/div/div[3]/input')))
-        # enviar.click()
-        # time.sleep(10)
+        pyautogui.press("enter") 
+
 
         self.exibir_mensagem_conclusao()
 
@@ -253,7 +242,6 @@ class UserInputApplication(tk.Tk):
             self.state_registration_number_entry.get()
         ]
 
-        # Limpa a formatação anterior de campos com erro
         for entry in self.entry_fields:
             entry.configure(style="TEntry")
 
@@ -275,23 +263,18 @@ class UserInputApplication(tk.Tk):
         self.driver.get("https://portal.sefaz.go.gov.br/portalsefaz-apps/auth/login-form")
 
     def start_process(self):
-        chrome_driver_path = os.path.join(os.getcwd(), 'Version/chromedriver.exe')  # define chrome_driver_path
-
-        # Inicializa o WebDriver.
+        chrome_driver_path = os.path.join(os.getcwd(), 'Version/chromedriver.exe')  
         self.driver = webdriver.Chrome(executable_path=chrome_driver_path)
         self.wait = WebDriverWait(self.driver, 5)
 
-        # Define os valores a serem usados.
         values = self.values
-        nfe_option = self.download_option.get()  # Valor do combobox
-        nf_model_option = self.nf_model_option.get()  # Valor do combobox
+        nfe_option = self.download_option.get() 
+        nf_model_option = self.nf_model_option.get()
 
         try:
             if nfe_option == "Saída":
-                # Executa a operação somente para saída.
                 self.execute_operation(values, select_saida=True, nf_model_option=nf_model_option)
             else:
-                # Executa a operação somente para entrada.
                 self.execute_operation(values, select_saida=False, nf_model_option=nf_model_option)
         except Exception as e:
             print(e)
@@ -299,8 +282,7 @@ class UserInputApplication(tk.Tk):
             self.driver.quit()
 
     def execute_operation(self, values, select_saida, nf_model_option):
-        self.common_operations()
-        nfe_option = self.download_option.get()  # Obtenha o valor selecionado no combobox
+        self.common_operations() 
 
         login = self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="username"]')))
         login.send_keys(values[0])
@@ -394,16 +376,14 @@ class UserInputApplication(tk.Tk):
             pesquisarInscricao.click()
             time.sleep(10)
 
-            # Adicionar a verificação aqui
             try:
                 erroInscricao = self.wait.until(
                     EC.presence_of_element_located((By.XPATH, '//*[@id="panel"]/div[3]/div/button')))
                 mbox.showerror("Erro",
                                "A inscrição não tem notas fiscais ou não está habilitado para consulta. Por favor, verifique e tente novamente.")
-                return  # Retorna do método para evitar executar o resto do código
+                return  
             except TimeoutException:
-                pass  # Nenhum erro encontrado, continuar com o processo normal
-
+                pass  
             baixarxmlnfe2 = self.wait.until(
                 EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div[2]/div/button')))
             baixarxmlnfe2.click()
